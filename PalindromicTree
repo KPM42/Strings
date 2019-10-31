@@ -34,7 +34,7 @@ void AddLetter(int pos){
     t.push_back(PalTree());
     t[suf].len = t[cur].len + 2;
     t[cur].next[let] = suf;
-    // Из палиндромов длины 1 суфссылка в корень 1
+    // Из палиндромов длины 1 суфссылка в корень 1 - корень четных палиндромов
     if(t[suf].len == 1){
         t[suf].SufLink = 1;
         return;
@@ -49,4 +49,14 @@ void AddLetter(int pos){
             break;
         }
     }
+}
+
+
+void solve(){
+    suf = 1;
+    t.push_back(PalTree());
+    t.push_back(PalTree());
+    t[0].len = -1; t[0].SufLink = 0; // корень нечетных палиндромов
+    t[1].len = 0; t[1].SufLink = 0; // корень четных палиндромов
+    cin >> str;
 }
