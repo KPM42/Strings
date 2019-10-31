@@ -1,0 +1,52 @@
+
+struct PalTree{
+    int next[26]; // переходы как в боре
+    int SufLink = -1;
+    int len; // длина палиндрома
+    PalTree(){
+        for0(i, 26)
+            next[i] = -1;
+    }
+};
+
+string str;
+vec<PalTree> t;
+int suf; // в какой вершине остановились
+ll ans = 0;
+
+
+void AddLetter(int pos){
+    int let = str[pos] - 'a';
+    int cur = suf, curlen = 0; // стоим где остановились в прошлый раз
+    while(true){
+        curlen = t[cur].len; // длина текущего палиндрома
+        if(pos - 1 - curlen >= 0 && str[pos - 1 - curlen] == str[pos]) //Можем ли продлить этот палиндром новым символом
+            break;
+        cur = t[cur].SufLink; // если не можем, идем по суффиксной ссылке
+    }
+    
+    if(t[cur].next[let]!= -1){// Если у вершины есть переход по симовлу, то идем в него
+        suf = t[cur].next[let];
+        return;
+    }
+    // если перехода по символу нет, создаем новую вершину
+    suf = t.size();
+    t.push_back(PalTree());
+    t[suf].len = t[cur].len + 2;
+    t[cur].next[let] = suf;
+    // Из палиндромов длины 1 суфссылка в корень 1
+    if(t[suf].len == 1){
+        t[suf].SufLink = 1;
+        return;
+    }
+    // Иначе пытаемся топать по суфссылкам дальше пока не найдем следующий палиндром который можно продлить этим сиволом, пойдем по символу и пустим туда ссылку
+    // Мы всегда найдем такую вершину, ведь как минимум из корня уже есть ребра во все вершины длины 1
+    while(true){
+        cur = t[cur].SufLink;
+        curlen = t[cur].len;
+        if(pos - 1 - curlen >= 0 && str[pos - 1 - curlen] == str[pos]){
+            t[suf].SufLink = t[cur].next[let];
+            break;
+        }
+    }
+}
